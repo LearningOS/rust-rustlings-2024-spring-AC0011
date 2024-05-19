@@ -2,7 +2,7 @@
 	queue
 	This question requires you to use queues to implement the functionality of the stac
 */
-// I AM NOT DONE
+
 
 #[derive(Debug)]
 pub struct Queue<T> {
@@ -52,6 +52,15 @@ impl<T> Default for Queue<T> {
     }
 }
 
+/*
+要使用两个队列来实现栈（myStack），我们可以利用以下策略：
+
+1. 将新的元素始终加入到一个队列中（q1）。
+2. 当需要弹出元素时，将q1的元素（除了最后一个）全部转移到另一个队列（q2），最后一个元素即为需要弹出的元素。
+3. 弹出元素后，将q2与q1互换，保持q1为空，并继续使用q2进行后续操作。
+*/
+
+
 pub struct myStack<T>
 {
 	//TODO
@@ -68,14 +77,27 @@ impl<T> myStack<T> {
     }
     pub fn push(&mut self, elem: T) {
         //TODO
+        self.q1.enqueue(elem);
     }
     pub fn pop(&mut self) -> Result<T, &str> {
         //TODO
-		Err("Stack is empty")
+        if self.q1.is_empty(){
+            return Err("Stack is empty");
+        }
+		
+        while self.q1.size()>1{
+            let elem=self.q1.dequeue().unwrap();
+            self.q2.enqueue(elem);
+        }
+        let popped_elem=self.q1.dequeue().unwrap();
+
+        std::mem::swap(&mut self.q1,&mut self.q2);
+
+        Ok(popped_elem)
     }
     pub fn is_empty(&self) -> bool {
 		//TODO
-        true
+        self.q1.is_empty()
     }
 }
 
